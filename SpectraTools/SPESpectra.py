@@ -58,21 +58,39 @@ class SPESpectra(object):
                 data = [int(i) for i in lines[2:-1]]
                 self.data = {'channels':channels,'data':data}
             elif field.startswith('roi'):
-                pass
-            elif field.startswith('presets'):
-                pass
+                lines = t.splitlines()
+                self.roi = list()
+                for line in lines[2:len(lines)]:
+                    self.roi.append([int(i) for i in line.split()])
             elif field.startswith('ener_fit'):
-                pass
+                lines = t.splitlines()
+                self.ener_fit = list()
+                for line in lines[1:len(lines)]:
+                    self.ener_fit.append([float(i) for i in line.split()])
             elif field.startswith('mca_cal'):
-                pass
+                lines = t.splitlines()
+                self.mca_cal = list()
+                for line in lines[2:len(lines)]:
+                    self.mca_cal.append([float(i) for i in line.split()])
             elif field.startswith('shape_cal'):
+                lines = t.splitlines()
+                self.shape_cal = list()
+                for line in lines[2:len(lines)]:
+                    self.shape_cal.append([float(i) for i in line.split()])
+            elif field.startswith('presets'):
                 pass
             else:   
                 print 'Unkown field: '+field
                 
     def __str__(self):
-        attrs = vars(self)
-        return ''.join("%s\n" for a in attrs)
+        attrs =  vars(self)
+        headers = ['filename','spec_id','spec_rem','date_mea','meas_tim']
+        data = ['roi','ener_fit','mca_cal','shape_cal']
+        # need to print data
+        s = ''.join("%s: %s\n" % (key,str(attrs[key])) for key in headers)
+        s += 'channels: '+str(len(self.data['channels']))+'\n'
+        s += ''.join("%s: %s\n" % (key,str(attrs[key])) for key in data)
+        return s
     
     def __repr__(self):
         attrs =  vars(self)
