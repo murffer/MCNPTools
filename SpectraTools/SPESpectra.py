@@ -1,5 +1,14 @@
-class SPESpectra(object):
+"""
+SPESpectra
 
+Spe spectra file
+
+"""
+
+class SPESpectra(object):
+    """
+    Some more informaition
+    """
 
     def parseField(self,fieldname,token):
         """ parses text for a given field name
@@ -50,7 +59,7 @@ class SPESpectra(object):
             elif field.startswith('meas_tim'):
                 data = self.parseField('meas_tim',t)
                 times = data.split()
-                self.meas_tim = {'Live time (s)':float(times[0]),'Real Time (s)':float(times[1])}
+                self.meas_tim = {'Live time':float(times[0]),'Real time':float(times[1])}
             elif field.startswith('data'):
                 lines = t.splitlines()
                 channels = [int(i) for i in lines[1].split()]
@@ -81,8 +90,23 @@ class SPESpectra(object):
                 pass
             else:   
                 print 'Unkown field: '+field
+    
+    def plot(self):
+        """
+        Plots the data using pyplot
+        """
+        import matplotlib.pyplot as plt
+        import numpy as np
+        plt.plot(self.data['channels'], np.array(self.data['data'])/self.meas_tim['Live time'])
+        plt.title(self.filename)
+        plt.xlabel('Channel Number')
+        plt.ylabel('Count Rate (cps)')
+        plt.show()            
                 
     def __str__(self):
+        """
+        String representation
+        """
         attrs =  vars(self)
         headers = ['filename','spec_id','spec_rem','date_mea','meas_tim']
         data = ['roi','ener_fit','mca_cal','shape_cal']
@@ -100,6 +124,6 @@ Debugging Main
 """         
 if __name__ == '__main__':
     s = SPESpectra('Test.Spe')
-    print s
+    s.plot()
 
 
