@@ -108,10 +108,11 @@ class SPESpectra(object):
         for r in roi:
             l = self.data['channels'].index(r[0])
             h = self.data['channels'].index(r[1])
-            B = float((sum(self.data['data'][l:l+2])+sum(self.data['data'][h-2:h]))*(h-1+1))/6.0
+            B = float((sum(self.data['data'][l:l+2])+sum(self.data['data'][h-2:h]))*(h-1+1)/6.0)
             Ag = float(sum(self.data['data'][l:h]))
             Aag = float(sum(self.data['data'][l+3:h-3]))
             An = Aag - float(B*(h-l-5)/float(h-l+1))
+            print h,l
             s += '\n\tBackground: {0}\n\tGross:{1}\n\tAdjusted Gross:{2}\n\tNet: {3}\n'.format(B,Ag,Aag,An)
         print s
         return data
