@@ -7,7 +7,9 @@ Spe spectra file
 
 class SPESpectra(object):
     """
-    Some more informaition
+    SPE Spectra file. 
+    
+    Representation of the SPE spectra file according the the MAESTRO manuals.
     """
 
     def parseField(self,fieldname,token):
@@ -90,6 +92,21 @@ class SPESpectra(object):
                 pass
             else:   
                 print 'Unkown field: '+field
+    def countRate(self,roi=None):
+        """
+        countRate(self,roi)
+        
+                Returns the count rate in a given region of intrest.  If a
+                region of intrest is not suplied (as a 2D array) than the count
+                rate of the entire spectrum is returned.
+        """
+        import math
+        if roi is None:
+            roi = [0,len(self.data['channels'])]
+        cr = sum(self.data['channels'][roi[0]:roi[1]+1])
+        cr = [cr/self.meas_tim['Live time'], math.sqrt(cr)/self.meas_tim['Live time']]
+        return  cr
+        
     def roiAnalysis(self,roi=None):
         """
         Calculates the count rate in each of the ROI's
@@ -132,6 +149,7 @@ class SPESpectra(object):
         plt.ylabel('Count Rate (cps)')
         plt.show()            
                 
+                
     def __str__(self):
         """
         String representation
@@ -146,6 +164,9 @@ class SPESpectra(object):
         return s
     
     def __repr__(self):
+        """
+        Representation of the object
+        """
         attrs =  vars(self)
         return ''.join("%s: %s\n" % item for item in attrs.items())
 """ 
@@ -154,3 +175,4 @@ Debugging Main
 if __name__ == '__main__':
     s = SPESpectra('Test.Spe')
     s.plot()
+    print s.countRate()
