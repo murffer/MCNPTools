@@ -118,8 +118,6 @@ class SPESpectra(object):
             s += '\n\tBackground: {0:12.2f}\n\tGross:{1:17.2f}\n\tAdjusted Gross:{2:8.2f}\n\tNet: {3:20.2f}'.format(B,Ag,Aag,An)
             s += '\n\tNet Error: {0:13.2f}\n'.format(sigmaAn)
             data.append([An,sigmaAn])
-        print s
-        print data
         return data
         
     def plot(self):
@@ -155,7 +153,4 @@ Debugging Main
 """         
 if __name__ == '__main__':
     s = SPESpectra('Test.Spe')
-    # s.plot()
-    s.roiAnalysis()
-
-
+    s.plot()
