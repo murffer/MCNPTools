@@ -98,6 +98,7 @@ class SPESpectra(object):
                 provided, than any ROI's in the spectra are used.  If none are
                 there, than nothing is returned
         """
+        import math
         # Allocating data and reassinging the ROI if necessary
         data = list()
         if roi is None:
@@ -106,16 +107,21 @@ class SPESpectra(object):
         # Calculating the ROI
         s = 'ROI Analysis:'
         for r in roi:
-            l = self.data['channels'].index(r[0])
-            h = self.data['channels'].index(r[1])
-            B = float((sum(self.data['data'][l:l+2])+sum(self.data['data'][h-2:h]))*(h-1+1)/6.0)
-            Ag = float(sum(self.data['data'][l:h]))
-            Aag = float(sum(self.data['data'][l+3:h-3]))
+            l = r[0]
+            h = r[1]
+            B = (sum(self.data['data'][l:l+3])+sum(self.data['data'][h-2:h+1]))/6.0*(h-l+1)
+            Ag = float(sum(self.data['data'][l:h+1]))
+            Aag = float(sum(self.data['data'][l+3:h-3+1]))
             An = Aag - float(B*(h-l-5)/float(h-l+1))
-            print h,l
-            s += '\n\tBackground: {0}\n\tGross:{1}\n\tAdjusted Gross:{2}\n\tNet: {3}\n'.format(B,Ag,Aag,An)
+            sigmaAn = math.sqrt(Aag+B*((h-l-5)/6.0)*(h-l-5.0)/(h-l+1.0))
+            s += '\n\tROI: {} to {}'.format(r[0],r[1])
+            s += '\n\tBackground: {0:12.2f}\n\tGross:{1:17.2f}\n\tAdjusted Gross:{2:8.2f}\n\tNet: {3:20.2f}'.format(B,Ag,Aag,An)
+            s += '\n\tNet Error: {0:13.2f}\n'.format(sigmaAn)
+            data.append([An,sigmaAn])
         print s
+        print data
         return data
+        
     def plot(self):
         """
         Plots the data using pyplot
