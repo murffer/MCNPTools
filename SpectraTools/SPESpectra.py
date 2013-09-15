@@ -90,7 +90,32 @@ class SPESpectra(object):
                 pass
             else:   
                 print 'Unkown field: '+field
-    
+    def roiAnalysis(self,roi=None):
+        """
+        Calculates the count rate in each of the ROI's
+        
+        roi - an 2D array of Region of Intrest (ROI's). If the ROI's are not
+                provided, than any ROI's in the spectra are used.  If none are
+                there, than nothing is returned
+        """
+        # Allocating data and reassinging the ROI if necessary
+        data = list()
+        if roi is None:
+            roi = self.roi
+            
+        # Calculating the ROI
+        s = 'ROI Analysis:'
+        for r in roi:
+            l = self.data['channels'].index(r[0])
+            h = self.data['channels'].index(r[1])
+            B = float((sum(self.data['data'][l:l+2])+sum(self.data['data'][h-2:h]))*(h-1+1)/6.0)
+            Ag = float(sum(self.data['data'][l:h]))
+            Aag = float(sum(self.data['data'][l+3:h-3]))
+            An = Aag - float(B*(h-l-5)/float(h-l+1))
+            print h,l
+            s += '\n\tBackground: {0}\n\tGross:{1}\n\tAdjusted Gross:{2}\n\tNet: {3}\n'.format(B,Ag,Aag,An)
+        print s
+        return data
     def plot(self):
         """
         Plots the data using pyplot
@@ -124,6 +149,7 @@ Debugging Main
 """         
 if __name__ == '__main__':
     s = SPESpectra('Test.Spe')
-    s.plot()
+    # s.plot()
+    s.roiAnalysis()
 
 
