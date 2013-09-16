@@ -103,7 +103,7 @@ class SPESpectra(object):
         import math
         if roi is None:
             roi = [0,len(self.data['channels'])]
-        cr = sum(self.data['channels'][roi[0]:roi[1]+1])
+        cr = sum(self.data['data'][roi[0]:roi[1]+1])
         cr = [cr/self.meas_tim['Live time'], math.sqrt(cr)/self.meas_tim['Live time']]
         return  cr
         
@@ -169,10 +169,3 @@ class SPESpectra(object):
         """
         attrs =  vars(self)
         return ''.join("%s: %s\n" % item for item in attrs.items())
-""" 
-Debugging Main
-"""         
-if __name__ == '__main__':
-    s = SPESpectra('Test.Spe')
-    s.plot()
-    print s.countRate()
